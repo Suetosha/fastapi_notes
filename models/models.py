@@ -1,24 +1,27 @@
-from sqlalchemy import MetaData, Table, Column, String, Integer, ForeignKey, Boolean
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
+from sqlalchemy import String, Integer, ForeignKey, Boolean
+from sqlalchemy.orm import DeclarativeBase, mapped_column
 
-metadata = MetaData()
 
-user = Table(
-    'user',
-    metadata,
-    Column('id', Integer, primary_key=True),
-    Column('email', String, unique=True, nullable=False),
-    Column('hashed_password', String, nullable=False),
-    Column('is_active', Boolean, nullable=False, default=True),
-    Column('is_superuser', Boolean, nullable=False, default=False),
-    Column('is_verified', Boolean, nullable=False, default=False),
+class Base(DeclarativeBase):
+    pass
 
-)
 
-note = Table(
-    'note',
-    metadata,
-    Column('id', Integer, primary_key=True),
-    Column('title', String, nullable=False),
-    Column('content', String, nullable=False),
-    Column('user_id', Integer, ForeignKey('user.id'), nullable=False),
-)
+class User(SQLAlchemyBaseUserTable[int], Base):
+    __tablename__ = 'user'
+
+    id = mapped_column(Integer, primary_key=True)
+    email = mapped_column(String, nullable=False, unique=True)
+    hashed_password = mapped_column(String, nullable=False)
+    is_active = mapped_column(Boolean, nullable=False, default=True)
+    is_superuser = mapped_column(Boolean, nullable=False, default=False)
+    is_verified = mapped_column(Boolean, nullable=False, default=False)
+
+
+class Note(Base):
+    __tablename__ = 'note'
+
+    id = mapped_column(Integer, primary_key=True)
+    title = mapped_column(String, nullable=False)
+    content = mapped_column(String, nullable=False)
+    user_id = mapped_column(Integer, ForeignKey('user.id'), nullable=False)
