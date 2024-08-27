@@ -11,5 +11,4 @@ DB_PORT = os.getenv("DB_PORT")
 SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
 
 SECRET = os.getenv("SECRET")
-
-
+YANDEX_SPELLER_API_URL = "https://speller.yandex.net/services/spellservice.json/checkText"
